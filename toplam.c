@@ -12,9 +12,6 @@ int main(int argc, char const *argv[]) {
 
   /* create the FIFO (named pipe) */
   mkfifo(myfifo, 0666);
-
-
-  //char **number = intToCharArray(13);
   /* write number to the FIFO but firstly convert int to charArray because function second param' takes a charArray*/
   char *number = "13";
   fd = open(myfifo, O_WRONLY);
@@ -29,12 +26,3 @@ int main(int argc, char const *argv[]) {
 
   return 0;
 }
-
-
-/*char **intToCharArray(int number){
-
-  char **str[100];
-  sprintf(str, "%d", number);
-  // Now str contains the integer as characters
-  return str;
-}*/
