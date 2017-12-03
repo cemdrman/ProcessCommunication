@@ -3,26 +3,35 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <string.h>
+
+void sendDateWithNamedPipe(char *number){
+  int fd;
+  char * myfifo = "/tmp/myfifo";
+  /* create the FIFO (named pipe) */
+  mkfifo(myfifo, 0666);
+  fd = open(myfifo, O_WRONLY);
+  /* write number to the FIFO but firstly convert int to charArray because function second param' takes a charArray*/
+  write(fd, number, sizeof(number));
+  //close(fd);
+    /* remove the FIFO */
+  //unlink(myfifo);
+}
 
 
 int main(int argc, char const *argv[]) {
 
-  int fd;
-  char * myfifo = "/tmp/myfifo";
+  char n[3];
+  char k[3];
 
-  /* create the FIFO (named pipe) */
-  mkfifo(myfifo, 0666);
-  /* write number to the FIFO but firstly convert int to charArray because function second param' takes a charArray*/
-  char *number = "13";
-  fd = open(myfifo, O_WRONLY);
-  write(fd, number, sizeof(number));
+  printf("n değerini giriniz:\n");
+  fgets(n, 3, stdin);
+  sendDateWithNamedPipe(n);
+  printf("k değerini giriniz:\n");
+  fgets(k, 3, stdin);
+  sendDateWithNamedPipe(k);
 
-  close(fd);
-
-  /* remove the FIFO */
-  unlink(myfifo);
   printf("islem bitti\n");
-
 
   return 0;
 }

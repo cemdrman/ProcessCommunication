@@ -13,19 +13,28 @@ void initializeParams(char c1[]){
 }
 
 
+int readFromNamedPipe() {
+  int fdNamedPipe;
+  char * myfifo = "/tmp/myfifo";
+  char buffer[MAX_BUF];
+  /* open, read, and display the message from the FIFO */
+  fdNamedPipe = open(myfifo, O_RDONLY);
+  read(fdNamedPipe, buffer, MAX_BUF);
+  //close(fdNamedPipe);
+  int receivedNumber = atoi(buffer);
+  return receivedNumber;
+}
+
 int main(int argc, char const *argv[]) {
 
-    int fdNamedPipe;
-    char * myfifo = "/tmp/myfifo";
-    char buffer[MAX_BUF];
-    int receivedNumber;
+    int receivedN;
+    int receivedK;
 
-    /* open, read, and display the message from the FIFO */
-    fdNamedPipe = open(myfifo, O_RDONLY);
-    read(fdNamedPipe, buffer, MAX_BUF);
-    //printf("Received: %s\n", buffer);
-    receivedNumber =  atoi(buffer);
-    //printf("Int value = %d\n", receivedNumber);
+    receivedN =  readFromNamedPipe();
+    printf("n = %d\n", receivedN);
+
+    receivedK = readFromNamedPipe();
+    printf("k = %d\n", receivedK);
 
     //---------
 
@@ -36,7 +45,7 @@ int main(int argc, char const *argv[]) {
     int f;
     int i;
 
-    f = fork();
+  /*  f = fork();
 
     if (f == 0) {
       initializeParams("18");
@@ -46,7 +55,7 @@ int main(int argc, char const *argv[]) {
       printf("Gönderildi\n");
     }else{
       wait(&i);
-    }
-    close(fdNamedPipe);
+    }*/
+  //
   return 0;
 }
