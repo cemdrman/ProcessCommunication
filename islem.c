@@ -10,7 +10,7 @@
 int readFromNamedPipe(){
   int fdNamedPipe;
   char * myfifo = "/tmp/myfifo";
-  fdNamedPipe = open(myfifo, O_WRDONLY);
+  fdNamedPipe = open(myfifo, O_RDONLY);
   char bufferN[MAX_BUF];
   /* open, read, and display the message from the FIFO */
   read(fdNamedPipe, bufferN, MAX_BUF);
@@ -37,7 +37,6 @@ int main() {
       if (f == 0) {
         write(6, &k, sizeof(int)); //writing to pipe
         i = execv("nkup",NULL);
-        //close(pipefd[1]);
       }else{
         wait(&i); //waiting for child process
         int nKupResult;
@@ -58,6 +57,7 @@ int main() {
           int result;
           read(7, &result, sizeof(int)); //reading from pipe
           printf("(%d ^ 3 + %d) = %d\n", k,k,result);
+          //sendIntDataWithNamedPipe(result);
         }
       }
     }
