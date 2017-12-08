@@ -19,18 +19,13 @@ void sendDateWithNamedPipe(char *number){
 }
 
 int main(int argc, char const *argv[]) {
-
   char n[3];
   char k[3];
-
   printf("n değerini giriniz:\n");
   fgets(n, 3, stdin);
   sendDateWithNamedPipe(n);
   printf("k değerini giriniz:\n");
   fgets(k, 3, stdin);
   sendDateWithNamedPipe(k);
-
-  printf("islem bitti\n");
-
   return 0;
 }

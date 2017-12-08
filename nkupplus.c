@@ -4,7 +4,6 @@
 #include <math.h>
 
 int main() {
-
   int receivedNumber;
   read(7, &receivedNumber, sizeof(int));
   int nKupPlus = receivedNumber + cbrt(receivedNumber);
