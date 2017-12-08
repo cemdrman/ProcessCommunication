@@ -3,26 +3,19 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MAX_BUF 1024
 
-char *params[1];
-
-void initializeParams(char c1[]){
-	params[0] = c1;
-}
-
-
-int readFromNamedPipe() {
+int readFromNamedPipe(){
   int fdNamedPipe;
   char * myfifo = "/tmp/myfifo";
-  char buffer[MAX_BUF];
+  char bufferN[MAX_BUF];
   /* open, read, and display the message from the FIFO */
   fdNamedPipe = open(myfifo, O_RDONLY);
-  read(fdNamedPipe, buffer, MAX_BUF);
-  //close(fdNamedPipe);
-  int receivedNumber = atoi(buffer);
-  return receivedNumber;
+  read(fdNamedPipe, bufferN, MAX_BUF);
+
+  return atoi(bufferN);
 }
 
 int main(int argc, char const *argv[]) {
@@ -30,32 +23,46 @@ int main(int argc, char const *argv[]) {
     int receivedN;
     int receivedK;
 
-    receivedN =  readFromNamedPipe();
-    printf("n = %d\n", receivedN);
-
+    receivedN = readFromNamedPipe();
     receivedK = readFromNamedPipe();
-    printf("k = %d\n", receivedK);
 
-    //---------
+    //-----Calling sub programs----
 
-    int fd[2]; //for other writing and reading from small program as nkup
-    pipe(fd);
-    fd[0]; // for using read
-    fd[1]; // for using write
+    int pipefd[2]; //for other writing and reading from small program as a nkup
     int f;
     int i;
 
-  /*  f = fork();
-
+    if (pipe(pipefd) < 0) { //creating pipe
+       perror("has been throwing error while creating pipe");
+       exit(1);
+    }
+    f = fork();
     if (f == 0) {
-      initializeParams("18");
-      i = execv("nkup",params);
-      perror("execv failed!");
-
-      printf("Gönderildi\n");
+      write(6, &receivedN, sizeof(int)); //writing to pipe
+      i = execv("nkup",NULL);
+      //close(pipefd[1]);
     }else{
-      wait(&i);
-    }*/
-  //
+      wait(&i); //waiting for child process
+      int nKupResult;
+      read(5, &nKupResult, sizeof(int)); //reading from pipe
+
+      int pipefd1[2];
+      int f1;
+      int j;
+      if (pipe(pipefd1) < 0) { //creating pipe
+         perror("has been throwing error while creating pipe");
+         exit(1);
+      }
+      f1 = fork();
+      if (f1 == 0) {
+        write(8,&nKupResult,sizeof(int));
+        j = execv("nkupplus",NULL);
+      }else{
+        wait(&j);
+        int result;
+        read(7, &result, sizeof(int)); //reading from pipe
+        printf("(%d ^ 3 + %d) = %d\n", receivedN,receivedN,result);
+      }
+    }
   return 0;
 }

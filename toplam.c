@@ -18,7 +18,6 @@ void sendDateWithNamedPipe(char *number){
   //unlink(myfifo);
 }
 
-
 int main(int argc, char const *argv[]) {
 
   char n[3];
